@@ -17,7 +17,7 @@ A powerful, multi-threaded Windows Batch & Python-powered downloader for e621. F
 🛠️ Installation & Setup
 1. Prerequisites
 
-Ensure you have the following installed on your Windows machine:
+Ensure you have the following installed on your Windows PC:
 
     Python 3.10+: Download here
 
@@ -25,18 +25,16 @@ Ensure you have the following installed on your Windows machine:
 
 2. Download the Project
 
-Either download the ZIP from GitHub or clone the repository:
-Bash
-
-git clone https://github.com/YOUR_USERNAME/e621-smart-downloader.git
-cd e621-smart-downloader
-
 3. Install Dependencies
 
 Open your terminal/command prompt in the project folder and run:
 Bash
 
 pip install requests tqdm
+
+or
+
+py -m pip install requests tqdm
 
 4. Configuration (API Key)
 
