@@ -27,8 +27,7 @@ Ensure you have the following installed on your Windows PC:
 
 3. Install Dependencies
 
-Open your terminal/command prompt in the project folder and run:
-Bash
+Open your terminal/command prompt in the project folder and run
 
 pip install requests tqdm
 
@@ -38,13 +37,12 @@ py -m pip install requests tqdm
 
 4. Configuration (API Key)
 
-Open downloader.py in any text editor (Notepad, VS Code) and enter your credentials at the top:
-Python
+Open downloader.py in any text editor (Notepad, VS Code) and enter your credentials at the top
 
 USERNAME = "Your_e621_Username"
 API_KEY = "Your_e621_API_Key"
 
-    Note: You can find your API key on your e621 account page under Account -> Setting -> API Key.
+    Note: You can find your API key on your e621 account page under Account -> Settings -> API Key.
 
 🚀 How to Use
 
@@ -66,8 +64,7 @@ API_KEY = "Your_e621_API_Key"
 
 📂 Folder Structure
 
-The script manages your library with surgical precision:
-Plaintext
+The script manages your library automatically
 
 downloads/
 └── Character_Name/
