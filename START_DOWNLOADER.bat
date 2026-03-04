@@ -105,7 +105,7 @@ echo  [ Max posts to fetch for this job ]
 set /p w_lim=" > Limit: "
 
 echo.
-echo  [ Use official e621 tags only. Separate multiple tags with ; ]
+echo  [ Use e621 tags only. Separate multiple tags with ; ]
 set /p w_tags=" > Extra Tags: "
 if not exist "blacklist.txt" echo. > blacklist.txt
 set /p w_black=<blacklist.txt
