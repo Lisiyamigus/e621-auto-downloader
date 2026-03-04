@@ -44,7 +44,7 @@ Python
 USERNAME = "Your_e621_Username"
 API_KEY = "Your_e621_API_Key"
 
-    Note: You can find your API key on your e621 account page under Account -> API Key.
+    Note: You can find your API key on your e621 account page under Account -> Setting -> API Key.
 
 🚀 How to Use
 
