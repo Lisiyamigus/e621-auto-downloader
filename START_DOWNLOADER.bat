@@ -43,33 +43,33 @@ goto home
 cls
 echo  ==================== QUEUE WIZARD ====================
 echo.
-echo  [ SLIP NOTE: Use 'all' for species searches ]
+echo  [ Use 'all' for species searches ]
 :char_entry
 set /p w_char=" > Character Name: "
 if "!w_char!"=="" goto char_entry
 if /i "!w_char!"=="all" (
-    echo  [ SLIP NOTE: Enter a species like 'canine' or 'dragon' ]
+    echo  [ Enter species like 'canine' or 'dragon' ]
     :spec_entry
     set /p w_spec=" > Species Name: "
     if "!w_spec!"=="" goto spec_entry
 ) else ( set "w_spec=none" )
 
 echo.
-echo  [ SLIP NOTE: s = Safe, q = Questionable, e = Explicit ]
+echo  [ s = Safe, q = Questionable, e = Explicit ]
 :rate_entry
 set /p w_rate=" > Rating (s/q/e): "
 py -c "import sys; sys.exit(0 if sys.argv[1].lower() in ['s','q','e'] else 1)" "!w_rate!"
 if errorlevel 1 goto rate_entry
 
 echo.
-echo  [ SLIP NOTE: Must include operator, e.g., >50 or =100 ]
+echo  [ Use operator and number, e.g., >50 ]
 :score_entry
 set /p w_qual=" > Min Score: "
 py -c "import sys; s=sys.argv[1]; sys.exit(0 if any(op in s for op in '><=') and any(c.isdigit() for c in s) else 1)" "!w_qual!"
 if errorlevel 1 goto score_entry
 
 echo.
-echo  [ SLIP NOTE: Pick 'n' to exclude specific types ]
+echo  [ Pick 'n' to exclude specific types ]
 :type_interview
 set /p all_types=" > Download all file types? (y/n): "
 if /i "!all_types!"=="y" (
@@ -83,14 +83,14 @@ if /i "!all_types!"=="y" (
 )
 
 echo.
-echo  [ SLIP NOTE: Max posts to fetch for this job ]
+echo  [ Max posts to fetch for this job ]
 :limit_entry
 set /p w_lim=" > Limit: "
 py -c "import sys; sys.exit(0 if sys.argv[1].isdigit() else 1)" "!w_lim!"
 if errorlevel 1 goto limit_entry
 
 echo.
-echo  [ SLIP NOTE: Optional tags, separate with ; ]
+echo  [ Optional tags, separate with ; ]
 set /p w_tags=" > Extra Tags: "
 set /p w_black=<blacklist.txt
 
