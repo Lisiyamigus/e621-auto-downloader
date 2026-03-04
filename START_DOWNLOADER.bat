@@ -87,8 +87,10 @@ cls
 echo  ==================== QUEUE WIZARD ====================
 echo.
 echo  [ Use e621 tags for names. Use 'all' for species searches ]
+:char_entry
 set /p w_char=" > Character Name: "
-if "!w_char!"=="" goto wizard
+if "!w_char!"=="" goto char_entry
+
 if /i "!w_char!"=="all" (
     echo  [ Enter a species tag like 'canine' or 'dragon' ]
     set /p w_spec=" > Species Name: "
@@ -96,14 +98,18 @@ if /i "!w_char!"=="all" (
 
 echo.
 echo  [ s = Safe, q = Questionable, e = Explicit ]
+:rate_entry
 set /p w_rate=" > Rating (s/q/e): "
+if "!w_rate!"=="" set "w_rate=any"
 
 echo.
 echo  [ Write it using an operator: ^>100 , ^<50 , or =200 ]
+:score_entry
 set /p w_qual=" > Min Score: "
 
 echo.
 echo  [ Pick 'n' to exclude specific types ]
+:type_interview
 set /p all_types=" > Download all file types? (y/n): "
 if /i "!all_types!"=="y" (
     set "w_img=y"
@@ -117,7 +123,8 @@ if /i "!all_types!"=="y" (
 
 echo.
 echo  [ Max posts to fetch for this job ]
-set /p w_lim=" > Limit: "
+set /p w_lim=" > Limit (default 10): "
+if "!w_lim!"=="" set "w_lim=10"
 
 echo.
 echo  [ Use e621 tags only. Separate multiple tags with ; ]
