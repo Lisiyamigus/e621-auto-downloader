@@ -17,10 +17,13 @@ def get_smart_query(job):
     if job["rate"] and job["rate"] != "any": query.append(f"rating:{job['rate']}")
     if job["qual"]: query.append(f"score:{job['qual']}")
     
-    f_type = job.get("type", "all").lower()
-    if f_type == "video": query.append("type:webm")
-    elif f_type == "gif": query.append("type:gif")
-    elif f_type == "image": query.append("-type:webm -type:gif")
+    inc_img = job.get("inc_img", "y")
+    inc_vid = job.get("inc_vid", "y")
+    inc_gif = job.get("inc_gif", "y")
+
+    if inc_img == "n": query.append("-type:jpg -type:png")
+    if inc_vid == "n": query.append("-type:webm -type:mp4")
+    if inc_gif == "n": query.append("-type:gif")
 
     if job["tags"]: query.append(job["tags"].replace(";", " "))
     if job["black"]:
@@ -31,42 +34,32 @@ def get_smart_query(job):
 def download_queue():
     if not os.path.exists("queue.json"): return
     auth = (USERNAME, API_KEY) if USERNAME != "YourUsernameHere" else None
-
     with open("queue.json", "r") as f:
         queue = json.load(f)
 
     for job in queue:
         tags = get_smart_query(job)
         is_all_search = job["char"].lower() == "all"
-        
         print(f"\n [QUEUE] Searching: {tags}")
-        
         try:
             url = f"https://e621.net/posts.json?tags={tags}&limit={job['lim']}"
             resp = requests.get(url, headers={"User-Agent": "SmartQueue/1.0"}, auth=auth)
             posts = resp.json().get('posts', [])
-            
             for post in tqdm(posts, desc=" Saving"):
                 f_url = post.get('file', {}).get('url')
                 if not f_url: continue 
-                
                 char_tags = post.get('tags', {}).get('character', [])
                 if is_all_search and char_tags:
                     folder_name = char_tags[0] if len(char_tags) == 1 else "multiple_characters"
                 else:
                     folder_name = job["char"] if job["char"] != "all" else job["spec"]
-                
                 clean_folder = folder_name.replace(" ", "_")
                 ext = post['file']['ext'].lower()
-                
                 sub = "videos" if ext in ['webm', 'mp4'] else "gifs" if ext == 'gif' else "images"
-                
                 final_dir = os.path.join("downloads", clean_folder, sub)
                 os.makedirs(final_dir, exist_ok=True)
-                
                 filename = f"{clean_folder}_{post['id']}.{ext}"
                 full_path = os.path.join(final_dir, filename)
-                
                 if not os.path.exists(full_path):
                     content = requests.get(f_url).content
                     with open(full_path, "wb") as f_img:
