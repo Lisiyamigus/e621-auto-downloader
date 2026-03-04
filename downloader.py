@@ -40,18 +40,25 @@ def download_queue():
     for job in queue:
         tags = get_smart_query(job)
         is_all_search = job["char"].lower() == "all"
-        target_limit = int(job["lim"])
-        downloaded_count = 0
         
-        print(f"\n [QUEUE] Searching: {tags} | Limit: {target_limit}")
+        # Hard Force: Convert the limit to a clean integer
+        try:
+            target_limit = int(job["lim"])
+        except:
+            target_limit = 10 
+        
+        downloaded_count = 0
+        print(f"\n [QUEUE] Searching: {tags} | Target: {target_limit}")
         
         try:
-            # We fetch slightly more than the limit to account for dead links or skipped files
-            url = f"https://e621.net/posts.json?tags={tags}&limit={max(target_limit, 75)}"
+            # CRITICAL FIX: The URL now passes the EXACT limit to e621
+            url = f"https://e621.net/posts.json?tags={tags}&limit={target_limit}"
             resp = requests.get(url, headers={"User-Agent": "SmartQueue/1.0"}, auth=auth)
             posts = resp.json().get('posts', [])
             
-            pbar = tqdm(total=target_limit, desc=" Saving", bar_format="{l_bar}{bar:20}{r_bar}")
+            # Use the actual number of posts returned (in case it's less than the limit)
+            actual_count = min(len(posts), target_limit)
+            pbar = tqdm(total=actual_count, desc=" Saving", bar_format="{l_bar}{bar:20}{r_bar}")
             
             for post in posts:
                 if downloaded_count >= target_limit:
@@ -80,12 +87,9 @@ def download_queue():
                     content = requests.get(f_url).content
                     with open(full_path, "wb") as f_img:
                         f_img.write(content)
-                    downloaded_count += 1
-                    pbar.update(1)
-                else:
-                    # If file exists, we still count it toward the limit for this job
-                    downloaded_count += 1
-                    pbar.update(1)
+                
+                downloaded_count += 1
+                pbar.update(1)
             
             pbar.close()
         except Exception as e: print(f" [!] Error: {e}")
