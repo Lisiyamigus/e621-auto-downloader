@@ -1,4 +1,5 @@
 # e621-Smart-Queue-Downloader-
+(just download files below readme)
 A powerful, multi-threaded Windows Batch & Python-powered downloader for e621. Featuring an interactive "Queue Wizard," automated character sorting, high-resolution file grabbing, and custom RGB UI themes.
 ✨ Key Features
 
