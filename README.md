@@ -75,3 +75,5 @@ downloads/
 ⚖️ Disclaimer
 
 This tool is for personal use only. Please respect e621's rate limits and terms of service. Using an API key is highly recommended to avoid being throttled as a guest.
+
+(I got bored at school)
