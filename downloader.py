@@ -40,30 +40,54 @@ def download_queue():
     for job in queue:
         tags = get_smart_query(job)
         is_all_search = job["char"].lower() == "all"
-        print(f"\n [QUEUE] Searching: {tags}")
+        target_limit = int(job["lim"])
+        downloaded_count = 0
+        
+        print(f"\n [QUEUE] Searching: {tags} | Limit: {target_limit}")
+        
         try:
-            url = f"https://e621.net/posts.json?tags={tags}&limit={job['lim']}"
+            # We fetch slightly more than the limit to account for dead links or skipped files
+            url = f"https://e621.net/posts.json?tags={tags}&limit={max(target_limit, 75)}"
             resp = requests.get(url, headers={"User-Agent": "SmartQueue/1.0"}, auth=auth)
             posts = resp.json().get('posts', [])
-            for post in tqdm(posts, desc=" Saving"):
+            
+            pbar = tqdm(total=target_limit, desc=" Saving", bar_format="{l_bar}{bar:20}{r_bar}")
+            
+            for post in posts:
+                if downloaded_count >= target_limit:
+                    break
+                
                 f_url = post.get('file', {}).get('url')
                 if not f_url: continue 
+                
                 char_tags = post.get('tags', {}).get('character', [])
                 if is_all_search and char_tags:
                     folder_name = char_tags[0] if len(char_tags) == 1 else "multiple_characters"
                 else:
                     folder_name = job["char"] if job["char"] != "all" else job["spec"]
+                
                 clean_folder = folder_name.replace(" ", "_")
                 ext = post['file']['ext'].lower()
                 sub = "videos" if ext in ['webm', 'mp4'] else "gifs" if ext == 'gif' else "images"
+                
                 final_dir = os.path.join("downloads", clean_folder, sub)
                 os.makedirs(final_dir, exist_ok=True)
+                
                 filename = f"{clean_folder}_{post['id']}.{ext}"
                 full_path = os.path.join(final_dir, filename)
+                
                 if not os.path.exists(full_path):
                     content = requests.get(f_url).content
                     with open(full_path, "wb") as f_img:
                         f_img.write(content)
+                    downloaded_count += 1
+                    pbar.update(1)
+                else:
+                    # If file exists, we still count it toward the limit for this job
+                    downloaded_count += 1
+                    pbar.update(1)
+            
+            pbar.close()
         except Exception as e: print(f" [!] Error: {e}")
 
 if __name__ == "__main__":
